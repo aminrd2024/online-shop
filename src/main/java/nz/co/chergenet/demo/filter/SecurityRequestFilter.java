@@ -51,6 +51,7 @@ public class SecurityRequestFilter extends OncePerRequestFilter {
                 }
             } catch (Exception ex) {
                 sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Failed to validate security");
+                return;
             }
         }
         filterChain.doFilter(request, response);

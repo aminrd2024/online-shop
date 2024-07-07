@@ -3,19 +3,13 @@ package nz.co.chergenet.demo.service;
 import lombok.extern.slf4j.Slf4j;
 import nz.co.chergenet.demo.model.Card;
 import nz.co.chergenet.demo.model.Product;
-import nz.co.chergenet.demo.model.PurchasedItemDto;
 import nz.co.chergenet.demo.repository.CardRepository;
 import nz.co.chergenet.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 
 @Service
 @Transactional
@@ -46,6 +40,14 @@ public class StoreService {
         return productRepository.findAll();
     }
 
+    /**
+     * Save the customer card with products added and update the product quantity
+     * If existing product quantity is Zero or number if order is greater then quantity
+     * it throws an exception.
+     *
+     * @param card
+     * @return  card
+     */
     public Card saveCard(Card card) {
         card.getPurchasedItemList()
                 .forEach(item -> {
@@ -70,6 +72,5 @@ public class StoreService {
                 });
         return cardRepository.save(card);
     }
-
 
 }
