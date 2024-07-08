@@ -1,13 +1,11 @@
 package nz.co.chergenet.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nz.co.chergenet.demo.filter.SecurityRequestFilter;
 import nz.co.chergenet.demo.service.StoreService;
 import nz.co.chergenet.demo.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import nz.co.chergenet.demo.model.Product;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,19 +27,19 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    SecurityRequestFilter securityRequestFilter;
-
-    @MockBean
     private StoreService service;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private JwtUtil jwtUtil;
+
     @Test
     public void whenSaveProduct_thenProductShouldBeSaved() throws Exception {
         Product product = new Product(1L, "test_item", 100.80, 10);
 
-        when(service.saveProduct(any(Product.class))).thenReturn(product);
+        when(service.saveProduct(product)).thenReturn(product);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/shop/v1/admin/product")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +70,7 @@ public class ProductControllerTest {
 
         doNothing().when(service).deleteProduct(productId);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/shop/v1/admin/product/{id}", productId)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/shop/v1/admin/product/1", productId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("product deleted"));
